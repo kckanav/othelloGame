@@ -8,10 +8,10 @@ public class OthelloMain {
     public static void main(String[] args) {
         intro();
         game = new OthelloBoard();
-        String[] moves = {"D4", "E5"};
-        String[] moves1 = {"E4", "D5"};
-        game.place(moves, 1);
-        game.place(moves1, 2);
+//        String[] moves = {"D4", "E5"};
+//        String[] moves1 = {"E4", "D5"};
+//        game.place(moves, 1);
+//        game.place(moves1, 2);
         Scanner s = new Scanner(System.in);
         game.print();
         String str = s.next();
@@ -19,8 +19,7 @@ public class OthelloMain {
         while (!gameEnd(str)) {
             playGame(s, str);
             str = s.next();
-        }
-        // printResults();
+        }        // printResults();
     }
 
     public static void intro() {
@@ -60,17 +59,21 @@ public class OthelloMain {
             isBlack = false;
             game.print();
             System.out.println("Player 2's turn");
-        } else {
-            if (game.isPLaceAvail(2)) {
-                while (!game.isLegal(str) || !game.isEmpty(str) || !game.place(str, 2)) {
-                    System.out.println("Not a valid move");
-                    System.out.println("Please enter a valid place");
-                    str = s.next();
-                }
-            }
-            isBlack = true;
+             game.move();
+             isBlack = true;
             game.print();
-            System.out.println("Player 1's turn");
+//        } else {
+//            // game.move();
+//            if (game.isPLaceAvail(2)) {
+//                while (!game.isLegal(str) || !game.isEmpty(str) || !game.place(str, 2)) {
+//                    System.out.println("Not a valid move");
+//                    System.out.println("Please enter a valid place");
+//                    str = s.next();
+//                }
+//            }
+//            isBlack = true;
+//            game.print();
+//            System.out.println("Player 1's turn");
         }
     }
 }

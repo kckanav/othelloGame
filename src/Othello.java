@@ -10,14 +10,11 @@ public class Othello {
     protected int white;
     protected final Runnable runnable =
             (Runnable) Toolkit.getDefaultToolkit().getDesktopProperty("win.sound.default");
+    protected Boolean isSinglePLayer;
 
     public Othello() {
         board = new int[8][8];
         size = 0;
-//        String[] moves = {"D4", "E5"};
-//        String[] moves1 = {"E4", "D5"};
-//        place(moves, 1);
-//        place(moves1, 2);
         black = 0;
         white = 0;
     }
@@ -25,6 +22,11 @@ public class Othello {
     public void place(@NotNull String[] moves, int val) {
         for (String s: moves) {
             board[position(s)[0]][position(s)[1]] = val;
+            if (val == 1) {
+                black++;
+            } else {
+                white++;
+            }
             size++;
         }
     }
@@ -38,13 +40,20 @@ public class Othello {
         int col = pos.charAt(0) - 65;
         int row = pos.charAt(1) - 49;
         if (!legal(row, col) || board[row][col] != 0) {
-            throw new IllegalArgumentException();
+            return false;
         }
         if (safe(row, col, val, false)) {
+            int act = board[row][col];
             board[row][col] = val;
             if (val == 1) {
+                if (act == 2) {
+                    white--;
+                }
                 black++;
             } else {
+                if (act == 1) {
+                    black--;
+                }
                 white++;
             }
             size++;
@@ -114,8 +123,24 @@ public class Othello {
     protected void flipDiscs(@NotNull Stack<Integer> s, int val) {
         while(!s.isEmpty()) {
             int a = s.pop();
-            board[a / 10][a % 10] = val;
+            change(a / 10, a % 10, val);
         }
+    }
+
+    protected void change(int row, int col, int val) {
+        int act = board[row][col];
+        if (val == 1 && act != val) {
+            black++;
+            if (act == 2) {
+                white--;
+            }
+        } else if (val == 2 && act != val) {
+            white++;
+            if (act == 1) {
+                black--;
+            }
+        }
+        board[row][col] = val;
     }
 
     protected int[] diff(int row1, int col1, int row2, int col2) {
@@ -125,6 +150,7 @@ public class Othello {
     public int[] scores(){
         return new int[]{black, white};
     }
+
 
     public boolean isPLaceAvail(int val) {
         for (int i = 0; i < board.length; i++) {
@@ -162,6 +188,20 @@ public class Othello {
             }
             System.out.println();
         }
+        System.out.println(black + "" + white);
+    }
+
+    public boolean move() {
+        boolean b = false;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[1].length; j++) {
+                b = place(reversePosition(i, j), 2);
+                if (b) {
+                    return true;
+                }
+            }
+        }
+        return b;
     }
 
     // post: returns true iff row and col are legal for this board
