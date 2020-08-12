@@ -7,11 +7,11 @@ public class OthelloMain {
 
     public static void main(String[] args) {
         intro();
-        game = new OthelloBoard();
-//        String[] moves = {"D4", "E5"};
-//        String[] moves1 = {"E4", "D5"};
-//        game.place(moves, 1);
-//        game.place(moves1, 2);
+        game = new Othello();
+        String[] moves = {"D4", "E5"};
+        String[] moves1 = {"E4", "D5"};
+        game.place(moves, 1);
+        game.place(moves1, 2);
         Scanner s = new Scanner(System.in);
         game.print();
         String str = s.next();
@@ -58,6 +58,7 @@ public class OthelloMain {
             }
             isBlack = false;
             game.print();
+            game.remove(game.position(str)[0], game.position(str)[1]);
             System.out.println("Player 2's turn");
              game.move();
              isBlack = true;

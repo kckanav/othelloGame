@@ -17,6 +17,7 @@ public class OthelloBoard extends Othello implements ActionListener {
     private boolean isBlack = true;
     private JLabel score;
     private HashMap<Disc, Integer> map;
+    private ComPlayer player;
 
     // TODO: Game results code.
     public OthelloBoard() {
@@ -85,6 +86,7 @@ public class OthelloBoard extends Othello implements ActionListener {
         String[] moves1 = {"E4", "D5"};
         place(moves, 1);
         place(moves1, 2);
+        player = new ComPlayer(this, 2);
         // bring it on...
         f.setLocationRelativeTo(null);
         // f.setVisible(true);
@@ -126,6 +128,12 @@ public class OthelloBoard extends Othello implements ActionListener {
         }
         return false;
     }
+
+//    public void remove(int row, int col) {
+//        int val = super.remove(row, col);
+//        myButtons[row][col].setBackground(new Color(67, 133, 32));
+//        return 0;
+//    }
 
     // TODO: Introduce a change method so that you don't have to clone Stack.
     // TODO: The same method in both classes.
@@ -176,9 +184,11 @@ public class OthelloBoard extends Othello implements ActionListener {
             if(place(reversePosition(row, col),1)) {
                 infoPanel.setText("Your Turn");
                 print();
+                // remove(row, col);
                 updateScore();
                 isBlack = false;
-                move();
+                int pos = player.move();
+                place(pos / 10, pos % 10, player.getVal());
                 print();
                 isBlack = true;
                 updateScore();
