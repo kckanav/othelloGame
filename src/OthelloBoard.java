@@ -1,5 +1,4 @@
 import Elements.Disc;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,12 +17,12 @@ public class OthelloBoard extends Othello implements ActionListener {
     private JLabel score;
     private HashMap<Disc, Integer> map;
     private ComPlayer player;
+    private int lastMove = -1;
 
     // TODO: Game results code.
     public OthelloBoard() {
         super();
         Intro intro = new Intro(this);
-
         // Creating the frame
         f = new JFrame();
         f.setSize(90 * size + 50, 90 * size + 80);
@@ -89,7 +88,7 @@ public class OthelloBoard extends Othello implements ActionListener {
         player = new ComPlayer(this, 2);
         // bring it on...
         f.setLocationRelativeTo(null);
-        // f.setVisible(true);
+        f.setVisible(true);
         // f.toFront();
         intro.frame.toFront();
     }
@@ -117,12 +116,18 @@ public class OthelloBoard extends Othello implements ActionListener {
     }
 
     public boolean place(String pos, int val) {
-        if (super.place(pos, val)) {
-            int[] posi = super.position(pos);
+        int row = position(pos)[0];
+        int col = position(pos)[1];
+        return place(row, col, val);
+    }
+
+    public boolean place(int row, int col,  int val) {
+        if (super.place(row, col, val)) {
+            // int[] posi = super.position(pos);
             if (val == 1) {
-                myButtons[posi[0]][posi[1]].setBackground(Color.BLACK);
+                myButtons[row][col].setBackground(Color.BLACK);
             } else {
-                myButtons[posi[0]][posi[1]].setBackground(Color.WHITE);
+                myButtons[row][col].setBackground(Color.WHITE);
             }
             return true;
         }
@@ -155,17 +160,6 @@ public class OthelloBoard extends Othello implements ActionListener {
         }
     }
 
-    private void pause() {
-        pause(500);
-    }
-
-    private void pause(int delay) {
-        try {
-            Thread.sleep(delay);
-        } catch (Exception e) {
-            throw new InternalError();
-        }
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -177,19 +171,32 @@ public class OthelloBoard extends Othello implements ActionListener {
                 playMove(pos / 10, pos % 10);
             }
         }
+        if (isGameOver()) {
+            infoPanel.setText("Game Over");
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    myButtons[i][j].removeActionListener(this);
+                }
+            }
+        }
+    }
+
+    public boolean isGameOver() {
+        return !(isPLaceAvail(1) && isPLaceAvail(2));
     }
 
     protected void playSinglePlayer(int row, int col) {
         if (isBlack) {
-            if(place(reversePosition(row, col),1)) {
+            if(place(row, col ,1)) {
                 infoPanel.setText("Your Turn");
-                print();
+                // print();
                 // remove(row, col);
                 updateScore();
                 isBlack = false;
                 int pos = player.move();
-                place(pos / 10, pos % 10, player.getVal());
-                print();
+                if (!place(pos / 10, pos % 10, player.getVal()));
+                updateMove(pos);
+                //  print();
                 isBlack = true;
                 updateScore();
             } else {
@@ -218,5 +225,12 @@ public class OthelloBoard extends Othello implements ActionListener {
                 infoPanel.setText("Invalid move");
             }
         }
+    }
+    private void updateMove(int pos) {
+        if (lastMove != -1) {
+            myButtons[lastMove / 10][lastMove % 10].setBorder(null);
+        }
+        myButtons[pos / 10][pos % 10].setBorder(BorderFactory.createTitledBorder("Last Move"));
+        lastMove = pos;
     }
 }

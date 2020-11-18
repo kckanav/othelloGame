@@ -1,10 +1,9 @@
-import org.jetbrains.annotations.NotNull;
+
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 public class Othello {
     protected int[][] board;
@@ -34,7 +33,8 @@ public class Othello {
     }
 
     public int getBoardSize() {return boardSize;}
-    public void place(@NotNull String[] moves, int val) {
+
+    public void place(String[] moves, int val) {
         for (String s: moves) {
             board[position(s)[0]][position(s)[1]] = val;
             if (val == 1) {
@@ -53,6 +53,7 @@ public class Othello {
         int row = pos.charAt(1) - 49;
         return place(row, col, val);
     }
+
     // Takes in the position to place a move as a string, and the player value
     // Return true if the move was successful, false otherwise.
     public boolean place(int row, int col, int val) {
@@ -110,7 +111,7 @@ public class Othello {
         for (int i = rowStart; i <= rowEnd; i++) {
             for (int j = colStart; j <= colEnd; j++) {
                 if (board[row + i][col + j] != 0 && board[row + i][col + j] != val) {
-                    boolean temp = pattern(row, col, diff(row, col, row + i, col + j), val, q, justCheck);
+                    boolean temp = pattern(row + i, col + j, diff(row, col, row + i, col + j), val, q, justCheck);
                     if (temp) {
                         if (justCheck) {
                             return true;
@@ -133,10 +134,10 @@ public class Othello {
             flipDiscs(s, val);
             return true;
         } else {
+            s.add(10 * row + col);
             int nRow = row + patten[0];
             int nCol = col + patten[1];
             if (legal(nRow, nCol) && board[nRow][nCol] != 0) {
-                s.add(10 * nRow + nCol);
                 return pattern(nRow, nCol, patten, val, s, justCheck);
             } else {
                 return false;
@@ -144,7 +145,27 @@ public class Othello {
         }
     }
 
-    protected void flipDiscs(@NotNull Queue<Integer> s, int val) {
+//    protected boolean pattern(int row, int col, int[] patten, int val, Queue<Integer> s, boolean justCheck) {
+//        if (board[row][col] == val) {
+//            if (justCheck) {
+//                return true;
+//            }
+//            lastMove.addAll(s);
+//            flipDiscs(s, val);
+//            return true;
+//        } else {
+//            int nRow = row + patten[0];
+//            int nCol = col + patten[1];
+//            if (legal(nRow, nCol) && board[nRow][nCol] != 0) {
+//                s.add(10 * nRow + nCol);
+//                return pattern(nRow, nCol, patten, val, s, justCheck);
+//            } else {
+//                return false;
+//            }
+//        }
+//    }
+
+    protected void flipDiscs(Queue<Integer> s, int val) {
         while(!s.isEmpty()) {
             int a = s.remove();
             change(a / 10, a % 10, val);
@@ -201,7 +222,7 @@ public class Othello {
         return false;
     }
 
-    protected int[] position(@NotNull String pos) {
+    protected int[] position(String pos) {
         int col = pos.charAt(0) - 65;
         int row = pos.charAt(1) - 49;
         return new int[]{row, col};
@@ -258,6 +279,18 @@ public class Othello {
     public int size() { return size; }
 
     public Othello clone() {
+        // pause();
         return new Othello(board.clone(), black, white, isSinglePLayer);
+    }
+    private void pause() {
+        pause(500);
+    }
+
+    private void pause(int delay) {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

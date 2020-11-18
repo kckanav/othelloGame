@@ -1,5 +1,6 @@
 // A white color player.
 
+
 import java.util.Stack;
 
 public class ComPlayer {
@@ -17,6 +18,7 @@ public class ComPlayer {
         this.val = val;
     }
     public int getVal(){return val; }
+
 
     private int positionScore() {
         int whiteScore = 0;
@@ -67,6 +69,7 @@ public class ComPlayer {
     }
 
     public int move() {
+        int num = 0;
         game = perm.clone();
         Stack<Integer> s = new Stack<>();
         int row = -1;
@@ -85,20 +88,16 @@ public class ComPlayer {
                         row = i;
                         col = j;
                     }
-                    game.print();
+                    num++;
+                    // game.print();
                     game.remove(i, j);
-                    game.print();
+                    // game.print();
                     initialS = scoreRatio();
                     posS = positionScore();
                 }
             }
         }
+        System.out.println(num);
         return row * 10 + col;
     }
-
-//    private Stack<Integer> findPlaces(Stack<Integer> s, int val, int score, int layer) {
-//        if (layer == 2) {
-//            s
-//        }
-//    }
 }
