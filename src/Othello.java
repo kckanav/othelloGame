@@ -5,36 +5,90 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This ADT represents an game of Othello, and allows the user to play the game either with another player, or with a computer player.
+ * It represents the board and stores information about where the white and black tiles are, what the current score is, and allows
+ * functionality to make a new move on the board for a player.
+ *
+ * Starts the game with the initial 4 tiles of 2 black and 2 whites in the center.
+ */
 public class Othello {
+
+    public static final int BLACK_PLAYER_REP = 1;
+    public static final int WHITE_PLAYER_REP = 2;
+    public static final int DEFAULT_SIZE = 8;
+
     protected int[][] board;
-    protected int boardSize = 8;
     protected int size;
     protected int black;
     protected int white;
-    protected final Runnable runnable =
-            (Runnable) Toolkit.getDefaultToolkit().getDesktopProperty("win.sound.default");
     protected Boolean isSinglePLayer;
     protected Queue<Integer> lastMove;
 
+    /**
+     * Constructs a new game of othello with the starting 4 tiles on the board.
+     */
     public Othello() {
-        board = new int[8][8];
+        board = new int[DEFAULT_SIZE][DEFAULT_SIZE];
         size = 0;
         black = 0;
         white = 0;
         lastMove = new LinkedList<>();
+
+        // adding the 4 starting tiles to the game
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+
+                // absolute value of col - row
+                int val = j - i;
+                val = val < 0? -1 * val: val;
+
+                board[DEFAULT_SIZE / 2 - i][DEFAULT_SIZE / 2 - j] = val + 1;
+                if (val == 1) {
+                    black++;
+                } else {
+                    white++;
+                }
+            }
+        }
     }
 
+    /**
+     * Creates a new game of othello based on the specifics of some existing game.
+     * @param board the board of the current game.
+     * @param black the total black tiles on the board
+     * @param white the total white tiles on the board
+     * @param isSinglePLayer
+     */
     public Othello(int[][] board, int black, int white, boolean isSinglePLayer) {
         this.board = board;
         this.black = black;
         this.white = white;
+        size = black + white;
         this.isSinglePLayer = isSinglePLayer;
         lastMove = new LinkedList<>();
+        checkrep();
     }
 
-    public int getBoardSize() {return boardSize;}
+    private void checkrep() {
+        if (DEBUG) {
+            assert boardIsValid();
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board.length; j++) {
+                    assert board[i][j] >= 0 && board[i][j] < 2: "Invalid board value, expected 1 or 2";
+                }
+            }
+        }
+    }
 
+    /**
+     * Places tiles on the board for the player specified on the board from the given moves. It is expected that the moves
+     * are valid on the board, as no computation is done on the board. If the board is invalid, behaviour of game is unexpected.
+     * @param moves the array of all moves to play
+     * @param val player val who is performing the moves
+     */
     public void place(String[] moves, int val) {
+        checkrep();
         for (String s: moves) {
             board[position(s)[0]][position(s)[1]] = val;
             if (val == 1) {
@@ -44,22 +98,33 @@ public class Othello {
             }
             size++;
         }
-    }
-    public boolean place(String pos, int val) {
-        if (pos.length() != 2) {
-            throw new IllegalArgumentException();
-        }
-        int col = pos.charAt(0) - 65;
-        int row = pos.charAt(1) - 49;
-        return place(row, col, val);
+        checkrep();
     }
 
-    // Takes in the position to place a move as a string, and the player value
-    // Return true if the move was successful, false otherwise.
+    // TODO: A method for the controller, and not the model
+//    public boolean place(int row, int col, int val) {
+//        if (row > 7 || row < 0 || col > 7 || col < 0) {
+//            throw new IllegalArgumentException();
+//        }
+//        return place(row, col, val);
+//    }
+
+    /**
+     * Places a tile on the board with the given placement for the specified player. Indicates
+     * whether the move was successful or not.
+     * @param row the row of the position to place on in the board,
+     * @param col the col of the position to play
+     * @param val the player value of the player moving.
+     * @return true if the move was successfully played and changes to the board were done, false otherwise.
+     */
     public boolean place(int row, int col, int val) {
+        checkrep();
+        assert row > 0 && row < 7 && col > 0 && col < 7: "OutOfBoundsExceptionKinda!";
         if (!legal(row, col) || board[row][col] != 0) {
             return false;
         }
+
+        // I need to check can it be placed.
         if (safe(row, col, val, false)) {
             int act = board[row][col];
             board[row][col] = val;
@@ -227,6 +292,7 @@ public class Othello {
         int row = pos.charAt(1) - 49;
         return new int[]{row, col};
     }
+
     protected String reversePosition(int row, int col) {
         return "" + ((char) (col + 65)) + ((char)(row + 49));
     }

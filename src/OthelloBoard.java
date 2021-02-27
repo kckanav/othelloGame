@@ -19,6 +19,10 @@ public class OthelloBoard extends Othello implements ActionListener {
     private ComPlayer player;
     private int lastMove = -1;
 
+    public static void main(String[] args) {
+        Othello othelloBoard = new OthelloBoard();
+    }
+
     // TODO: Game results code.
     public OthelloBoard() {
         super();
@@ -194,7 +198,7 @@ public class OthelloBoard extends Othello implements ActionListener {
                 updateScore();
                 isBlack = false;
                 int pos = player.move();
-                if (!place(pos / 10, pos % 10, player.getVal()));
+                if (!place(pos / 10, pos % 10, player.val));
                 updateMove(pos);
                 //  print();
                 isBlack = true;

@@ -8,10 +8,10 @@ public class OthelloMain {
     public static void main(String[] args) {
         intro();
         game = new Othello();
-        String[] moves = {"D4", "E5"};
-        String[] moves1 = {"E4", "D5"};
-        game.place(moves, 1);
-        game.place(moves1, 2);
+//        String[] moves = {"D4", "E5"};
+//        String[] moves1 = {"E4", "D5"};
+//        game.place(moves, 1);
+//        game.place(moves1, 2);
         Scanner s = new Scanner(System.in);
         game.print();
         String str = s.next();
