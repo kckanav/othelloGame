@@ -12,9 +12,9 @@ public class OthelloController {
     public static final int BLACK_PLAYER_REP = 1;
     public static final int WHITE_PLAYER_REP = 2;
 
-    private final Othello game;
-    private final OthelloView view;
-    private boolean blackPlayerTurn;
+    protected final Othello game;
+    protected final OthelloView view;
+    protected boolean blackPlayerTurn;
     private boolean isSinglePlayer;
     private ComPlayer comPlayer;
 
@@ -60,7 +60,9 @@ public class OthelloController {
      * @param player the player who is placing the disc
      * @return the point where the disc was placed as row * 10 + col in the zero indexed game board.
      */
-    private int placePoint(int player) {
+    protected int placePoint(int player) {
+        String currPlayer = player == BLACK_PLAYER_REP ? "Black": "White";
+        view.displayMessage("Now the " + currPlayer + " places disc");
         int move = view.getNextMove(player);
         while (!game.place(move / 10, move % 10, player)) {
             view.displayMessage("Cannot place the disc there");

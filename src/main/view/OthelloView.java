@@ -40,4 +40,11 @@ public interface OthelloView {
      */
     public void setLastMove(int point);
 
+    /**
+     * Displays the view after the game has ended, along with statistics of the game
+     *
+     * @param scores the final scores for the players of the game
+     */
+    public void endGame(int[] scores);
+
 }

@@ -158,7 +158,11 @@ public class Othello {
      * @return true iff the player can place their disc at the point in the current state of the game, false otehrwise
      */
     public boolean canPlaceAt(int row, int col, int val) {
-        return computeOrMutatePath(row, col, val, true);
+        if (isNotOccupied(row, col)) {
+            return computeOrMutatePath(row, col, val, true);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -166,7 +170,7 @@ public class Othello {
      * @param val the player to check for
      * @return true if there is a possible move, false if there is no place where the player can place a disc.
      */
-    public boolean isPLaceAvail(int val) {
+    public boolean isPlaceAvail(int val) {
         for (int i = 0; i < board.length; i++) {
             for(int j = 0; j < board.length; j++) {
                 if (canPlaceAt(i, j, val)) {
@@ -214,7 +218,7 @@ public class Othello {
     }
 
     public boolean isOver() {
-        return !(isPLaceAvail(WHITE_PLAYER_REP) || isPLaceAvail(BLACK_PLAYER_REP));
+        return !(isPlaceAvail(WHITE_PLAYER_REP) || isPlaceAvail(BLACK_PLAYER_REP));
     }
 
     /**
@@ -341,6 +345,8 @@ public class Othello {
             } else {
                 s.clear();
             }
+        } else if (board[row][col] == 0) {
+            s.clear();
         }
     }
 
@@ -390,15 +396,4 @@ public class Othello {
         return new int[]{(row2 - row1), (col2 - col1)};
     }
 
-    private void pause() {
-        pause(500);
-    }
-
-    private void pause(int delay) {
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
-    }
 }

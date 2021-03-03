@@ -90,6 +90,17 @@ public class ConsoleView implements OthelloView {
         output.println("Last move was played at " + s);
     }
 
+    /**
+     * Displays the view after the game has ended, along with statistics of the game
+     */
+    @Override
+    public void endGame(int[] scores) {
+        output.println("The game has ended");
+        output.println("The final scores of the game were :-");
+        output.println("Black player: " + scores[0]);
+        output.println("White player: " + scores[1]);
+    }
+
 
     /**
      * Prints the introduction of the game.
