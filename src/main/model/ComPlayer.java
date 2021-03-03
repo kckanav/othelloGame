@@ -1,9 +1,11 @@
-// A white color player.
+package main.model;// A white color player.
 
 /**
  * This class represents a computer player. Allows functionality to get a computer player move on an ongoing game of othello.
  * It can be instantiated with any valid game of othello, and it tracks the game's updates automatically.
  */
+
+import main.model.Othello;
 
 import java.util.Stack;
 
@@ -28,7 +30,7 @@ public class ComPlayer {
      * @throws IllegalArgumentException if game is null or val is any integer other than 0 or 1
      */
     public ComPlayer(Othello game, int val) {
-        if (game == null || val > 1 || val < 0) {
+        if (game == null || val > 2 || val < 1) {
             throw new IllegalArgumentException("Invalid player value");
         }
         this.game = game;
@@ -38,9 +40,12 @@ public class ComPlayer {
     /**
      * Computes a new move for the computer player based on all the strategies implemented. Finds the best place to move on
      * the current board.
-     * @return an integer representing the new place, as row * 10 + column
+     * @return an integer representing the new place, as row * 10 + column, or -1 if there is no move left
      */
     public int move() {
+        if (!game.isPLaceAvail(val)) {
+            return -1;
+        }
         int num = 0;
         Stack<Integer> s = new Stack<>();
         int bestRow = -1;
