@@ -1,7 +1,8 @@
 package main.controller;
 
-import main.model.ComPlayer;
+import main.model.computerPlayers.AttackingComPlayer;
 import main.model.Othello;
+import main.model.computerPlayers.*;
 import main.view.OthelloView;
 
 import java.util.Random;
@@ -22,8 +23,8 @@ public class OthelloSimulationController extends OthelloController {
      */
     public OthelloSimulationController(Othello game, OthelloView view) {
         super(game, view);
-        player1 = new ComPlayer(game, BLACK_PLAYER_REP);
-        player2 = new ComPlayer(game, WHITE_PLAYER_REP);
+        player1 = new AttackingComPlayer(game, Othello.BLACK_PLAYER_REP);
+        player2 = new AttackingComPlayer(game, Othello.WHITE_PLAYER_REP);
     }
 
     /**
@@ -35,9 +36,8 @@ public class OthelloSimulationController extends OthelloController {
         getRandomStart();
         while (!game.isOver()) {
             ComPlayer player = blackPlayerTurn ? player1 : player2;
-            int val = blackPlayerTurn ? BLACK_PLAYER_REP: WHITE_PLAYER_REP;
+            int val = blackPlayerTurn ? Othello.BLACK_PLAYER_REP: Othello.WHITE_PLAYER_REP;
             int move = player.move();
-            System.out.println(move);
             if (move != -1) {
                 game.place(move / 10, move % 10, val);
                 view.updateBoard(game.getBoard());
@@ -56,7 +56,7 @@ public class OthelloSimulationController extends OthelloController {
         int[] starting = new int[]{53, 24, 35, 42};
         Random r = new Random();
         int index = r.nextInt(4);
-        game.place(starting[index] / 10, starting[index] % 10, BLACK_PLAYER_REP);
+        game.place(starting[index] / 10, starting[index] % 10, Othello.BLACK_PLAYER_REP);
         blackPlayerTurn = !blackPlayerTurn;
     }
 }

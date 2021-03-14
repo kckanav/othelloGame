@@ -9,7 +9,7 @@ package test;/*
  * author.
  */
 
-import main.model.ComPlayer;
+import main.model.computerPlayers.AttackingComPlayer;
 import main.model.Othello;
 
 import java.io.*;
@@ -79,8 +79,8 @@ public class GameTestDriver {
     private final Map<String, Othello> graphs = new HashMap<>();
     private final PrintWriter output;
     private final BufferedReader input;
-    private ComPlayer comPlayer1;
-    private ComPlayer comPlayer2;
+    private AttackingComPlayer attackingComPlayer1;
+    private AttackingComPlayer attackingComPlayer2;
 
     /**
      * @spec.requires r != null && w != null
@@ -159,8 +159,8 @@ public class GameTestDriver {
 
     private void createGame(String graphName) {
         Othello game = new Othello();
-        comPlayer1 = new ComPlayer(game, 1);
-        comPlayer2 = new ComPlayer(game, 2);
+        attackingComPlayer1 = new AttackingComPlayer(game, 1);
+        attackingComPlayer2 = new AttackingComPlayer(game, 2);
         graphs.put(graphName, game);
         game.print();
         output.println("created game " + graphName);
@@ -202,7 +202,7 @@ public class GameTestDriver {
 
     private void computerPlayer(String name, int val) {
         Othello game = graphs.get(name);
-        ComPlayer player = val == 1 ? comPlayer1: comPlayer2;
+        AttackingComPlayer player = val == 1 ? attackingComPlayer1 : attackingComPlayer2;
         int point = player.move();
         if (point != -1) {
             game.place(point / 10, point % 10, val);

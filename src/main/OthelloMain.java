@@ -6,8 +6,8 @@ import main.view.*;
 
 public class OthelloMain {
 
-    public static final boolean needFrameView = true;
-    public static final boolean needSimulator = false;
+    public static final boolean needFrameView = false;
+    public static final boolean needSimulator = true;
 
     public static void main(String[] args) {
         Othello game = new Othello();

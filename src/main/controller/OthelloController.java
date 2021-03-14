@@ -1,6 +1,6 @@
 package main.controller;
 
-import main.model.ComPlayer;
+import main.model.computerPlayers.AttackingComPlayer;
 import main.model.Othello;
 import main.view.*;
 
@@ -9,14 +9,11 @@ import main.view.*;
  */
 public class OthelloController {
 
-    public static final int BLACK_PLAYER_REP = 1;
-    public static final int WHITE_PLAYER_REP = 2;
-
     protected final Othello game;
     protected final OthelloView view;
     protected boolean blackPlayerTurn;
     private boolean isSinglePlayer;
-    private ComPlayer comPlayer;
+    private AttackingComPlayer attackingComPlayer;
 
     /**
      * Creates a new controller for the game of othello with the given game and view
@@ -27,7 +24,7 @@ public class OthelloController {
         this.game = game;
         this.view = view;
         blackPlayerTurn = true;
-        comPlayer = new ComPlayer(game, WHITE_PLAYER_REP);
+        attackingComPlayer = new AttackingComPlayer(game, Othello.WHITE_PLAYER_REP);
     }
 
     /**
@@ -39,13 +36,13 @@ public class OthelloController {
         while (!game.isOver()) {
             int move;
             if (isSinglePlayer && !blackPlayerTurn) {
-                move = comPlayer.move();
-                game.place(move / 10, move % 10, WHITE_PLAYER_REP);
+                move = attackingComPlayer.move();
+                game.place(move / 10, move % 10, Othello.WHITE_PLAYER_REP);
                 view.updateBoard(game.getBoard());
                 view.setLastMove(move);
                 view.updateScore(game.getScores());
             } else {
-                int player = blackPlayerTurn ? BLACK_PLAYER_REP : WHITE_PLAYER_REP;
+                int player = blackPlayerTurn ? Othello.BLACK_PLAYER_REP : Othello.WHITE_PLAYER_REP;
                 move = placePoint(player);
             }
             if (!isSinglePlayer) {
@@ -61,7 +58,7 @@ public class OthelloController {
      * @return the point where the disc was placed as row * 10 + col in the zero indexed game board.
      */
     protected int placePoint(int player) {
-        String currPlayer = player == BLACK_PLAYER_REP ? "Black": "White";
+        String currPlayer = player == Othello.BLACK_PLAYER_REP ? "Black": "White";
         view.displayMessage("Now the " + currPlayer + " places disc");
         int move = view.getNextMove(player);
         while (!game.place(move / 10, move % 10, player)) {

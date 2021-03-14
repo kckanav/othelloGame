@@ -1,22 +1,24 @@
-package main.model;
+package main.model.computerPlayers;
+
+import main.model.Othello;
 
 /**
  * This class represents a computer player. Allows functionality to get a computer player move on an ongoing game of othello.
  * It can be instantiated with any valid game of othello, and it tracks the game's updates automatically.
  */
-public class ComPlayer {
+public class AttackingComPlayer extends ComPlayer {
 
     private static final int INNER_CENTER = 3;
     private static final int OUTER_CENTER = 1;
     private static final int BORDER = 3;
-    private static final int CORNERS = 5;
+    private static final int CORNERS = 50; // including borders
 
     private final Othello game;
 
     /**
      * The value of the computer player
      */
-    public final int val;
+    private final int val;
 
     /**
      * Creates a new computer player over this game of type val
@@ -24,7 +26,8 @@ public class ComPlayer {
      * @param val 1 if com player is for black, 0 if it is white
      * @throws IllegalArgumentException if game is null or val is any integer other than 0 or 1
      */
-    public ComPlayer(Othello game, int val) {
+    public AttackingComPlayer(Othello game, int val) {
+        super(game, val);
         if (game == null || val > 2 || val < 1) {
             throw new IllegalArgumentException("Invalid player value");
         }
@@ -33,10 +36,11 @@ public class ComPlayer {
     }
 
     /**
-     * Computes a new move for the computer player based on all the strategies implemented. Finds the best place to move on
-     * the current board.
-     * @return an integer representing the new place, as row * 10 + column, or -1 if there is no move left
+     * Returns the move the computer player wants to move.
+     *
+     * @return the move coordinates as row * 10 + col in the 0 indexed 2D board, or -1 if no move is found
      */
+    @Override
     public int move() {
         if (!game.isPlaceAvail(val)) {
             return -1;
@@ -62,38 +66,10 @@ public class ComPlayer {
                 }
             }
         }
-        System.out.println(num);
         return bestRow * 10 + bestCol;
     }
 
-    /**
-     * Calculates the position score for the entire board
-     * @return an Integer representing by what score the computer player is leading in the game. A negative
-     * value indicates the player is losing
-     */
-    private int positionScore() {
-        int[][] board = game.board;
-        int size = game.size();
-        int whiteScore = 0;
-        int blackScore = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (board[i][j] != 0) {
-                    int a = board[i][j];
-                    if (a == 1) {
-                        blackScore += position(i, j);
-                    } else {
-                        whiteScore += position(i, j);
-                    }
-                }
-            }
-        }
-        if (val == 1) {
-            return blackScore - whiteScore;
-        } else {
-            return whiteScore - blackScore;
-        }
-    }
+
 
     /**
      * Calculates the position score for a particular place on the board. It calculates position score based on where a certain
@@ -102,7 +78,7 @@ public class ComPlayer {
      * @param col position column
      * @return the score for the position
      */
-    private int position(int row, int col) {
+    protected int position(int row, int col) {
         int size = game.size();
         if ((row == size / 2 - 1 || row == size / 2) && (col == size / 2 - 1|| col == size / 2)) { // Inner center
             return INNER_CENTER;
@@ -117,23 +93,11 @@ public class ComPlayer {
         }
     }
 
-    /**
-     * Returns the total score difference between the computer player and the user. Negative score indicates computer
-     * is losing
-     * @return the score difference
-     */
-    private int scoreRatio() {
-        if (val == 1) { // com is black
-            return game.black - game.white;
-        } else { // com is white
-            return game.white - game.black;
-        }
-    }
 
     /**
      * Calculates the difference of overall board between two different versions of the board. So, essentially helps in
      * seeing how much the score difference is before and after a possible move to see the viability of the move.
-     * @param initialScoreRatio the initital score of the board (Tile score)
+     * @param initialScoreRatio the initial score of the board (Tile score)
      * @param initialPositionScore the score based on the psotion of the tiles
      * @return the overall score difference in the board.
      */

@@ -25,6 +25,7 @@ public class ConsoleView implements OthelloView {
     public void updateScore(int[] scores) {
         output.println("Black Score: " + scores[0]);
         output.println("White score: " + scores[1]);
+        output.println();
     }
 
     /**
