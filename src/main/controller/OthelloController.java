@@ -2,6 +2,7 @@ package main.controller;
 
 import main.model.computerPlayers.AttackingComPlayer;
 import main.model.Othello;
+import main.model.computerPlayers.ComPlayer;
 import main.view.*;
 
 /**
@@ -13,7 +14,7 @@ public class OthelloController {
     protected final OthelloView view;
     protected boolean blackPlayerTurn;
     private boolean isSinglePlayer;
-    private AttackingComPlayer attackingComPlayer;
+    private ComPlayer comPlayer;
 
     /**
      * Creates a new controller for the game of othello with the given game and view
@@ -24,7 +25,7 @@ public class OthelloController {
         this.game = game;
         this.view = view;
         blackPlayerTurn = true;
-        attackingComPlayer = new AttackingComPlayer(game, Othello.WHITE_PLAYER_REP);
+       comPlayer = new AttackingComPlayer(game, Othello.WHITE_PLAYER_REP);
     }
 
     /**
@@ -36,7 +37,12 @@ public class OthelloController {
         while (!game.isOver()) {
             int move;
             if (isSinglePlayer && !blackPlayerTurn) {
-                move = attackingComPlayer.move();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                move = comPlayer.move();
                 game.place(move / 10, move % 10, Othello.WHITE_PLAYER_REP);
                 view.updateBoard(game.getBoard());
                 view.setLastMove(move);

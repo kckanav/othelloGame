@@ -13,12 +13,6 @@ public class AttackingComPlayer extends ComPlayer {
     private static final int BORDER = 3;
     private static final int CORNERS = 50; // including borders
 
-    private final Othello game;
-
-    /**
-     * The value of the computer player
-     */
-    private final int val;
 
     /**
      * Creates a new computer player over this game of type val
@@ -28,11 +22,6 @@ public class AttackingComPlayer extends ComPlayer {
      */
     public AttackingComPlayer(Othello game, int val) {
         super(game, val);
-        if (game == null || val > 2 || val < 1) {
-            throw new IllegalArgumentException("Invalid player value");
-        }
-        this.game = game;
-        this.val = val;
     }
 
     /**
@@ -42,7 +31,7 @@ public class AttackingComPlayer extends ComPlayer {
      */
     @Override
     public int move() {
-        if (!game.isPlaceAvail(val)) {
+        if (!game.isPlaceAvail(getVal())) {
             return -1;
         }
         int num = 0;
@@ -53,7 +42,7 @@ public class AttackingComPlayer extends ComPlayer {
         int max = -10;
         for (int i = 0; i < game.size(); i++) {
             for (int j = 0; j < game.size(); j++) {
-                boolean canBePlaced = game.place(i, j, val);
+                boolean canBePlaced = game.place(i, j, getVal());
                 if (canBePlaced) {
                     int diff = scoreAdv(initialS, posS);
                     if (diff > max) {
