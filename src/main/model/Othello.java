@@ -1,5 +1,6 @@
 package main.model;
 
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,11 @@ public class Othello {
      * Constructs a new game of othello with the starting 4 tiles on the board.
      */
     public Othello() {
+        try {
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         board = new int[DEFAULT_SIZE][DEFAULT_SIZE];
         black = 0;
         white = 0;

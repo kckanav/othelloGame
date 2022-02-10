@@ -18,7 +18,7 @@ public class FrameView implements ActionListener, OthelloView {
     private JLabel score;
     private Disc[][] myButtons;
     private Disc lastDiscClick;
-    private int lastMove;
+    private int lastMove = -1;
 
     public FrameView() {
         createFrame();
@@ -65,7 +65,9 @@ public class FrameView implements ActionListener, OthelloView {
      */
     @Override
     public void updateBoard(int[][] board) {
-        myButtons[lastMove / 10][lastMove % 10].setBorder(null);
+        if (lastMove != -1) {
+            myButtons[lastMove / 10][lastMove % 10].setBorder(null);
+        }
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 Disc curr = myButtons[i][j];
@@ -128,7 +130,9 @@ public class FrameView implements ActionListener, OthelloView {
      */
     @Override
     public void setLastMove(int point) {
-        myButtons[lastMove / 10][lastMove % 10].setBorder(null);
+        if (lastMove != -1) {
+            myButtons[lastMove / 10][lastMove % 10].setBorder(null);
+        }
         myButtons[point / 10][point % 10].setBorder(BorderFactory.createTitledBorder("Last Move"));
         lastMove = point;
     }
@@ -190,11 +194,12 @@ public class FrameView implements ActionListener, OthelloView {
         p.setBackground(new Color(29, 59, 16));
 
         myButtons = new Disc[SIZE][SIZE];
-        Font f24 = new Font("Serif", Font.BOLD, 24);
+
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 Disc b = new Disc(false, Disc.EMPTY_REP, i * 10 + j);
-                b.setBackground(new Color(67, 133, 32));
+                //b.setBackground(new Color(97, 11, 11));
+                //b.setBorderPainted(false);
                 b.addActionListener(this);
                 p.add(b);
                 myButtons[i][j] = b;
