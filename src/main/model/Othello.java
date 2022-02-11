@@ -1,9 +1,7 @@
 package main.model;
 
-import javax.swing.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This ADT represents an game of Othello, and allows the user to play the game either with another player, or with a computer player.
@@ -29,22 +27,20 @@ public class Othello {
     protected int size;
     protected int black;
     protected int white;
-    protected Queue<Integer> lastMove;
-    private boolean canRemove;
+    protected Queue<Integer> lastMoves; // All the discs that were flipped in the last move
+    protected int lastMove;
+    private boolean canRemove; // If current state allows for the last played move to be removed.
 
     /**
      * Constructs a new game of othello with the starting 4 tiles on the board.
      */
     public Othello() {
-        try {
-            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         board = new int[DEFAULT_SIZE][DEFAULT_SIZE];
         black = 0;
         white = 0;
-        lastMove = new LinkedList<>();
+        lastMoves = new LinkedList<>();
+        lastMove = -1;
         canRemove = false;
 
         // adding the 4 starting tiles to the game
@@ -76,7 +72,7 @@ public class Othello {
         this.black = black;
         this.white = white;
         size = black + white;
-        lastMove = new LinkedList<>();
+        lastMoves = new LinkedList<>();
         canRemove = false;
         checkrep();
     }
@@ -98,6 +94,7 @@ public class Othello {
 
         if (wasPLaced) {
             canRemove = true;
+            lastMove = row * 10 + col;
             size++;
             if (val == BLACK_PLAYER_REP) {
                 black++;
@@ -130,6 +127,21 @@ public class Othello {
     }
 
     /**
+     * Undo the last move pleayed on the board
+     * @return true if undo was successful, false otherwise.
+     */
+    public boolean undo() {
+        try {
+            remove(lastMove / 10, lastMove % 10);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Cannot Undo");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * removes the last played move in the game, along with all the tiles that were flipped as a consequence of
      * this move.
      * @param row the row of the last played move
@@ -150,9 +162,10 @@ public class Othello {
             val = BLACK_PLAYER_REP;
         }
         board[row][col] = 0;
-        flipDiscs(lastMove, val);
+        flipDiscs(lastMoves, val);
         canRemove = false;
-        lastMove.clear();
+        lastMove = -1;
+        lastMoves.clear();
         checkrep();
     }
 
@@ -223,7 +236,23 @@ public class Othello {
         return new Othello(board.clone(), black, white);
     }
 
+    /** -------------- FIXME ---------- Game is currently over if player has no move, However, new player needs to mov
+     * ----------------- again in that case !! Fix that ----------------------------
+     */
+    /**
+     * Checks if the game is over or not. Checks if the next player has any possible moves, if not,
+     * @return
+     */
     public boolean isOver() {
+        int player;
+        if (legal(lastMove / 10, lastMove % 10)) {
+            player = board[lastMove / 10][lastMove % 10];
+            if (player == BLACK_PLAYER_REP) {
+                return !isPlaceAvail(WHITE_PLAYER_REP);
+            } else {
+                return !isPlaceAvail(BLACK_PLAYER_REP);
+            }
+        }
         return !(isPlaceAvail(WHITE_PLAYER_REP) || isPlaceAvail(BLACK_PLAYER_REP));
     }
 
@@ -294,7 +323,7 @@ public class Othello {
             return false;
         }
         if (!justCheck && canPlaceAt(row, col, val)) {
-            lastMove.clear();
+            lastMoves.clear();
         }
 
         Queue<Integer> q = new LinkedList<>();
@@ -316,7 +345,7 @@ public class Othello {
                             return true;
                         }
                         flipDiscs(q, val);
-                        lastMove.addAll(q);
+                        lastMoves.addAll(q);
                         board[row][col] = val;
                         found = true;
                     }

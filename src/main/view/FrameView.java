@@ -5,6 +5,7 @@ import main.model.Disc;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,11 @@ public class FrameView implements ActionListener, OthelloView {
     private int lastMove = -1;
 
     public FrameView() {
+        try {
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         createFrame();
         lastDiscClick = null;
 
@@ -144,7 +150,13 @@ public class FrameView implements ActionListener, OthelloView {
      */
     @Override
     public void endGame(int[] scores) {
-
+        infoPanel.setText("Game over!");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
     }
 
     private void createFrame() {

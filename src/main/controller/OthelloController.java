@@ -15,6 +15,7 @@ public class OthelloController {
     protected boolean blackPlayerTurn;
     private boolean isSinglePlayer;
     private ComPlayer comPlayer;
+    private long SLEEP_TIME = 0;
 
     /**
      * Creates a new controller for the game of othello with the given game and view
@@ -38,12 +39,14 @@ public class OthelloController {
             int move;
             if (isSinglePlayer && !blackPlayerTurn) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(SLEEP_TIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 move = comPlayer.move();
-                game.place(move / 10, move % 10, Othello.WHITE_PLAYER_REP);
+                 if (!game.place(move / 10, move % 10, Othello.WHITE_PLAYER_REP)) {
+                     break;
+                 }
                 view.updateBoard(game.getBoard());
                 view.setLastMove(move);
                 view.updateScore(game.getScores());
@@ -56,6 +59,7 @@ public class OthelloController {
             }
             blackPlayerTurn = !blackPlayerTurn;
         }
+        view.endGame(game.getScores());
     }
 
     /**
